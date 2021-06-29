@@ -135,6 +135,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_classes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/classes */ "./src/js/lib/modules/classes.js");
 /* harmony import */ var _modules_handlers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/handlers */ "./src/js/lib/modules/handlers.js");
 /* harmony import */ var _modules_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/actions */ "./src/js/lib/modules/actions.js");
+/* harmony import */ var _modules_effects__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/effects */ "./src/js/lib/modules/effects.js");
+
 
 
 
@@ -228,6 +230,10 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.closest = function (sele
   for (let i = 0; i < this.length; i++) {
     this[i] = this[i].closest(selector);
     counter++;
+
+    if (this[i] == null || this[i] == undefined) {
+      console.log('enter correct classname');
+    }
   }
 
   const objLength = Object.keys(this).length;
@@ -285,6 +291,10 @@ __webpack_require__.r(__webpack_exports__);
 
 _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.addClass = function (...classNames) {
   for (let i = 0; i < this.length; i++) {
+    if (!this[i].classList) {
+      continue;
+    }
+
     this[i].classList.add(...classNames);
   }
 
@@ -293,6 +303,10 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.addClass = function (...
 
 _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.removeClass = function (...classNames) {
   for (let i = 0; i < this.length; i++) {
+    if (!this[i].classList) {
+      continue;
+    }
+
     this[i].classList.remove(...classNames);
   }
 
@@ -301,6 +315,10 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.removeClass = function (
 
 _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.toggleClass = function (classNames) {
   for (let i = 0; i < this.length; i++) {
+    if (!this[i].classList) {
+      continue;
+    }
+
     this[i].classList.toggle(classNames);
   }
 
@@ -356,6 +374,76 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.toggle = function () {
     } else {
       this[i].style.display = 'none';
     }
+  }
+
+  return this;
+};
+
+/***/ }),
+
+/***/ "./src/js/lib/modules/effects.js":
+/*!***************************************!*\
+  !*** ./src/js/lib/modules/effects.js ***!
+  \***************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core */ "./src/js/lib/core.js");
+
+
+_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.animateOverTime = function (dur, cb, fin) {
+  let timeStart;
+
+  function _animateOverTime(time) {
+    if (!timeStart) {
+      timeStart = time;
+    }
+
+    let timeElapsed = time - timeStart;
+    let complection = Math.min(timeElapsed / dur, 1);
+    cb(complection);
+
+    if (timeElapsed < dur) {
+      requestAnimationFrame(_animateOverTime);
+    } else {
+      if (typeof fin === 'function') {
+        fin();
+      }
+    }
+  }
+
+  return _animateOverTime;
+};
+
+_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.fadeIn = function (dur, display, fin) {
+  for (let i = 0; i < this.length; i++) {
+    this[i].style.display = display || 'block';
+
+    const _fadeIn = complection => {
+      this[i].style.opacity = complection;
+    };
+
+    const ani = this.animateOverTime(dur, _fadeIn, fin);
+    requestAnimationFrame(ani);
+  }
+
+  return this;
+};
+
+_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.fadeOut = function (dur, fin) {
+  for (let i = 0; i < this.length; i++) {
+    const _fadeOut = complection => {
+      this[i].style.opacity = 1 - complection;
+
+      if (complection === 1) {
+        this[i].style.display = 'none';
+      }
+    };
+
+    const ani = this.animateOverTime(dur, _fadeOut, fin);
+    requestAnimationFrame(ani);
   }
 
   return this;
@@ -425,14 +513,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/lib */ "./src/js/lib/lib.js");
 
 Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('button').on('click', function () {
-  Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('div').eq(1).toggleClass('active');
+  Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('div').eq(2).toggleClass('active');
 });
 Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('div').click(function () {
   console.log(Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])(this).index());
-}); // console.log($('div').eq(2).find('.more'));
+}); //  
 // console.log($('.some').closest('.findme'));
+// console.log($('.more').eq(0).siblings());
 
-console.log(Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('.more').eq(0).siblings()); // console.log($('button').html("hello"));
+Object(_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('button').fadeIn(2000); // console.log($('button').html("hello"));
 
 /***/ })
 

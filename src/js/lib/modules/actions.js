@@ -74,6 +74,10 @@ $.prototype.closest = function(selector) {
     for (let i = 0; i < this.length; i++) {
         this[i] = this[i].closest(selector);
         counter++;
+
+        if (this[i] == null || this[i] == undefined) {
+            console.log('enter correct classname');
+        }
     }
 
     const objLength = Object.keys(this).length;
